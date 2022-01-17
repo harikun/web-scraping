@@ -9,8 +9,12 @@ async function start() {
   //navigate to url
   await page.goto("https://learnwebcode.github.io/practice-requests/");
 
-  const names = ["red", "green", "blue"];
-  await fs.writeFile("colors.txt", names.join("\r\n"));
+  const names = await page.evaluate(() => {
+    return Array.from(document.querySelectorAll(".info strong")).map(
+      (item) => item.textContent
+    );
+  });
+  await fs.writeFile("names.txt", names.join("\r\n"));
 
   //close browser
   await browser.close();

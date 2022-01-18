@@ -2,22 +2,20 @@ const puppeteer = require("puppeteer");
 const fs = require("fs/promises");
 const cron = require("node-cron");
 
-//crawling koinmarketcap
+//crawling kompas
 async function start2() {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto("https://shopee.co.id/shop/28717084/");
-  const products = await page.$$eval("div.shop-search-result-view", (cards) => {
-    return cards.map((card) => {
-      const title = card.querySelector("._3j20V6").innerText;
-      const price = card.querySelector("._3TJGx5").innerText;
-      return {
-        title,
-        price,
-      };
-    });
+  await page.goto("https://tekno.kompas.com/", {
+    waitUntil: "load",
+    timeout: 0,
   });
-  await fs.writeFile("products.txt", products.join("\r\n"));
+  const titles = await page.evaluate((_) => {
+    return Array.from(document.querySelectorAll(".article__link")).map(
+      (item) => item.textContent
+    );
+  });
+  await fs.writeFile("products.txt", titles.join("\r\n"));
   await browser.close();
 }
 

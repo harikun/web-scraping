@@ -1,6 +1,26 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs/promises");
+const useragent = require("useragent");
 const cron = require("node-cron");
+
+// crawling yellowpages
+
+async function crawlingYellowPages() {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  await page.goto(
+    "https://www.yellowpages.com.au/find/lawyers-solicitors/gold-coast-qld"
+  );
+  // await page.click(".recaptcha-checkbox-checkmark");
+  await page.setUserAgent(useragent.toString());
+  // await page.click("#recaptcha-anchor");
+  // await page.click("button.submit");
+
+  console.log("done");
+  await browser.close();
+}
+
+crawlingYellowPages();
 
 //crawling kompas
 async function start2() {
@@ -18,8 +38,6 @@ async function start2() {
   await fs.writeFile("products.txt", titles.join("\r\n"));
   await browser.close();
 }
-
-start2();
 
 async function start() {
   //launch browser

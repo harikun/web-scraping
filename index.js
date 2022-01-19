@@ -3,6 +3,22 @@ const fs = require("fs/promises");
 const useragent = require("useragent");
 const cron = require("node-cron");
 
+// crawling Tokopedia
+async function start3() {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  await page.goto("https://www.tokopedia.com/ekoshopedia");
+  const data = await page.evaluate(() => {
+    return Array.from(document.querySelectorAll("a .css-12fc2syy")).map(
+      (item) => item.textContent
+    );
+  });
+  await fs.writeFile("products.txt", data.join("\r\n"));
+  console.log(data);
+  await browser.close();
+}
+start3();
+
 // crawling yellowpages
 
 async function crawlingYellowPages() {
@@ -11,16 +27,19 @@ async function crawlingYellowPages() {
   await page.goto(
     "https://www.yellowpages.com.au/find/lawyers-solicitors/gold-coast-qld"
   );
-  // await page.click(".recaptcha-checkbox-checkmark");
-  await page.setUserAgent(useragent.toString());
-  // await page.click("#recaptcha-anchor");
-  // await page.click("button.submit");
-
-  console.log("done");
+  await sleep(10000);
+  function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+  const names = await page.evaluate(() => {
+    const title = document.querySelectorAll("a > h3");
+    return Array.from(title).map((item) => item.textContent);
+  });
+  await fs.writeFile("names.txt", names.join("\r\n"));
   await browser.close();
 }
-
-crawlingYellowPages();
 
 //crawling kompas
 async function start2() {

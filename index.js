@@ -3,7 +3,18 @@ const fs = require("fs/promises");
 const useragent = require("useragent");
 const cron = require("node-cron");
 
-// crawling Tokopedia
+//crawling twitter stuck
+async function start1() {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  await page.goto("https://twitter.com/i/flow/login");
+  await page.type("input", "botnyahari");
+  await page.click("[role='button']");
+  await browser.close();
+}
+start1();
+
+// crawling Tokopedia fail
 async function start3() {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
@@ -17,9 +28,8 @@ async function start3() {
   console.log(data);
   await browser.close();
 }
-start3();
 
-// crawling yellowpages
+// crawling yellowpages fail
 
 async function crawlingYellowPages() {
   const browser = await puppeteer.launch({ headless: false });
@@ -41,7 +51,7 @@ async function crawlingYellowPages() {
   await browser.close();
 }
 
-//crawling kompas
+//crawling kompas success
 async function start2() {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
